@@ -1,0 +1,14 @@
+services:
+  gym-server-dev:
+    container_name: gym-server-dev
+    build:
+      context: ../../
+      dockerfile: src/infra/Dockerfile
+    ports:
+      - "3002:3002"
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+    working_dir: /app/src
+    env_file:
+      - ../.env
