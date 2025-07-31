@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:15
+    container_name: nutrition_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nutrition
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: nutrition_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/nutrition
+      GEMINI_API_KEY: your-gemini-api-key
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules # prevents overriding node_modules
+    command: sh -c "npx prisma generate && npx nodemon index.js"
+
+volumes:
+  pgdata:
