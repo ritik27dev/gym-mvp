@@ -1,7 +1,7 @@
 // const OpenAI = require('openai');
 
 // const client = new OpenAI({
-//   apiKey: "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",
+//   apiKey: "",
 // });
 
 // async function getNutritionAnalysis(prompt) {
