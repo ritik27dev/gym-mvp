@@ -49,7 +49,7 @@ async function analyzeNutrition(req, res) {
     // Validate userId is a valid number
     const parsedUserId = Number(userId);
     if (isNaN(parsedUserId) || parsedUserId <= 0) {
-      return res.status(400).json({ error: 'Invalid userId: must be a positive number' });
+      return res.status(400).json({ error: 'Invalid User ID: must be a positive number' });
     }
 
     // Validate date is a valid ISO string or Date
@@ -89,10 +89,13 @@ async function analyzeNutrition(req, res) {
       date: mealDate,
     });
 
+    // Return response with meal ID and simplified structure
     res.json({
+      id: meal.id, // Add meal ID
       userId: meal.userId,
       createdAt: meal.createdAt,
-      [`meal-time: ${meal.when}`]: {
+      meal: {
+        when: meal.when, // Use 'when' instead of dynamic key
         dishName: meal.dishName,
         ingredients: JSON.parse(meal.ingredients),
         macronutrients: JSON.parse(meal.macronutrients),
@@ -103,6 +106,7 @@ async function analyzeNutrition(req, res) {
     res.status(500).json({ error: 'Failed to analyze nutrition' });
   }
 }
+
 
 
 async function getMeals(req, res) {
