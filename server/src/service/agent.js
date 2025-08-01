@@ -1,72 +1,7 @@
-// const OpenAI = require('openai');
-
-// const client = new OpenAI({
-//   apiKey: "",
-// });
-
-// async function getNutritionAnalysis(prompt) {
-//   const systemPrompt = `
-// You are a professional nutritionist and dietitian.
-// Given a description of food eaten by ONE person (for a single meal), you must:
-// - Assume typical Indian or global recipe standards if dish details are vague.
-// - Break down the meal into its main ingredients with approximate **quantities in grams** (raw weight).
-// - Include ALL major ingredients such as oil, butter, cream, spices, rice, bread, etc.
-// - Estimate macronutrients (calories, protein, fat, carbs) realistically for that meal.
-
-// Return ONLY JSON with the following format:
-// {
-//   "ingredients": [
-//     { "name": "IngredientName", "quantity_g": 0 }
-//   ],
-//   "macronutrients": {
-//     "calories_kcal": 0,
-//     "protein_g": 0,
-//     "fat_g": 0,
-//     "carbs_g": 0
-//   }
-// }
-// Do not include any explanation or text outside the JSON.
-// `;
-
-//   const completion = await client.chat.completions.create({
-//     model: 'gpt-4o', // better accuracy than gpt-4o-mini
-//     messages: [
-//       { role: 'system', content: systemPrompt },
-//       { role: 'user', content: prompt }
-//     ],
-//     temperature: 0, // deterministic, less random
-//   });
-
-//   const content = completion.choices[0].message.content.trim();
-
-//   try {
-//     return JSON.parse(content);
-//   } catch (error) {
-//     console.error('Failed to parse AI response:', content);
-//     throw new Error('Invalid AI response format');
-//   }
-// }
-
-// module.exports = { getNutritionAnalysis };
-
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-
-function extractJSON(text) {
-  // Try to find a JSON block using regex
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('No JSON object found in AI response');
-  }
-
-  const jsonString = jsonMatch[0];
-  return JSON.parse(jsonString);
-}
-
-
 
 function parseGeminiResponse(response) {
   try {
