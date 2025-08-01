@@ -4,7 +4,7 @@
   "description": "Backend API for uploading data with image media",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node src/index.js",
     "dev": "nodemon index.js",
     "migration:generate": "prisma migrate dev --name init",
     "migration:deploy": "prisma migrate deploy",
