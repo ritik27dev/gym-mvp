@@ -40,22 +40,35 @@ const prisma = new PrismaClient();
 async function analyzeNutrition(req, res) {
   try {
     const { prompt, userId, date } = req.body;
-    if (!prompt || !userId) {
-      return res.status(400).json({ error: 'Prompt and userId are required' });
+
+    // Validate inputs
+    if (!prompt || !userId || !date) {
+      return res.status(400).json({ error: 'Prompt, userId, and date are required' });
     }
+
+    // Validate userId is a valid number
+    const parsedUserId = Number(userId);
+    if (isNaN(parsedUserId) || parsedUserId <= 0) {
+      return res.status(400).json({ error: 'Invalid userId: must be a positive number' });
+    }
+
+    // Validate date is a valid ISO string or Date
+    const mealDate = new Date(date);
+    if (isNaN(mealDate.getTime())) {
+      return res.status(400).json({ error: 'Invalid date: must be a valid date string (e.g., YYYY-MM-DD)' });
+    }
+    mealDate.setUTCHours(0, 0, 0, 0); // Normalize to start of the day
 
     const result = await getNutritionAnalysis(prompt);
 
-    const mealDate = new Date(date);
-    mealDate.setUTCHours(0, 0, 0, 0); // normalize to start of the day
-
+    // Query existing meal
     const existingMeal = await prisma.meal.findFirst({
       where: {
-        userId: Number(userId),
+        userId: parsedUserId,
         when: result.when || 'unspecified',
         date: {
           gte: mealDate,
-          lt: new Date(mealDate.getTime() + 24 * 60 * 60 * 1000),
+          lt: new Date(mealDate.getTime() + 24 * 60 * 60 * 1000), // Next day
         },
       },
     });
@@ -66,13 +79,14 @@ async function analyzeNutrition(req, res) {
       });
     }
 
+    // Create new meal
     const meal = await createMeal({
-      userId,
+      userId: parsedUserId,
       when: result.when || 'unspecified',
       dishName: result.dish_name || 'unspecified',
       ingredients: result.ingredients || [],
       macronutrients: result.macronutrients || {},
-      date,
+      date: mealDate,
     });
 
     res.json({
