@@ -4,13 +4,12 @@ const express = require('express');
     const nutritionRouter = require('../src/routes/nutritionRoutes');
      
     const moodRoutes = require("../src/routes/moodRoutes");
+const { swaggerUi, specs } = require('./swagger');
 
-     // Load environment variables
      dotenv.config();
 
      const app = express();
 
-     // Middleware
      app.use(cors());
      app.use(express.json());
      app.use(express.urlencoded({ extended: true }));
@@ -18,6 +17,7 @@ const express = require('express');
     app.use('/api/nutrition', nutritionRouter);
     app.use("/api/moods", moodRoutes);
      
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
      // Log all incoming requests
      app.use((req, res, next) => {

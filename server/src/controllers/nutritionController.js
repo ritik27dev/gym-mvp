@@ -3,39 +3,6 @@ const { createMeal, getMealsByUserId, updateMealById } = require('../db/prisma/f
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// async function analyzeNutrition(req, res) {
-//   try {
-//     const { prompt, userId, date } = req.body;
-//     if (!prompt || !userId) {
-//       return res.status(400).json({ error: 'Prompt and userId are required' });
-//     }
-
-//     const result = await getNutritionAnalysis(prompt);
-
-//     const meal = await createMeal({
-//       userId,
-//       when: result.when || 'unspecified',
-//       dishName: result.dish_name || 'unspecified',
-//       ingredients: result.ingredients || [],
-//       macronutrients: result.macronutrients || {},
-//       date,
-//     });
-
-//    res.json({
-//     userId: meal.userId,
-//     createdAt: meal.createdAt,
-//     [`meal-time: ${meal.when}`]: {
-//       dishName: meal.dishName,
-//       ingredients: JSON.parse(meal.ingredients),
-//       macronutrients: JSON.parse(meal.macronutrients),
-//     },
-// });
-//   } catch (error) {
-//     console.error('Error analyzing nutrition:', error);
-//     res.status(500).json({ error: 'Failed to analyze nutrition' });
-//   }
-// }
-
 
 async function analyzeNutrition(req, res) {
   try {
